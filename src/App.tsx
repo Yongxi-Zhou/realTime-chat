@@ -1,24 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
 import './App.css';
+import useForm from './useForm'
 
 function App() {
+  // const [email, setEmail] = useState<string>("")
+  // const [password, setPassword] = useState<string>("")
+  
+  const [values, handleChange] = useForm({email: "", password: ""})
+
+  useEffect(() => {
+    console.log("render");
+  }, [values.password])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type = "text" name = "email" value = {values.email} onChange = {handleChange} />
+      <input type = "text" name = "password" value = {values.password} onChange = {handleChange} />
+
+      {/* <input type = "text" value = {email} onChange = {e => {setEmail(e.target.value)}} />
+      <input type = "text" value = {password} onChange = {e => {setPassword(e.target.value)}} /> */}
     </div>
   );
 }
