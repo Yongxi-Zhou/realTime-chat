@@ -1,27 +1,44 @@
-import React, {useState, useCallback, useRef} from 'react';
-import './App.css';
-import {Hello} from './Hello';
-import {Square} from './Square';
-
+import React, { useState, useCallback, useRef, useMemo } from "react";
+import "./App.css";
+import useFetch from "./useFetch";
 
 function App() {
-  const [count, setCount] = useState<number>(0)
-  const list = [7,21,37]
-  const increment = useCallback(
-    (n) => {
-      setCount(c => c + n)
-    },
-    [setCount],
-  )
+  const [count, setCount] = useState<number>(0);
+  const { data } = useFetch(
+    "https://raw.githubusercontent.com/ajzbc/kanye.rest/master/quotes.json"
+  );
+
+  function getLongest(data: string[]) {
+    if (!data) {
+      return;
+    }
+    console.log("computing longest word");
+
+    let longest = "";
+    data.forEach((sentence: string) =>
+      sentence.split(" ").forEach((word) => {
+        if (word.length > longest.length) {
+          longest = word;
+        }
+      })
+    );
+    return longest;
+  }
+
+  const getter = useCallback(() => getLongest(JSON.parse(data)), [data]);
+
   return (
     <div className="App">
-      <Hello increment = {increment} />
       <div>count: {count}</div>
-      {list.map(n => {
-        return (
-          <Square n = {n} increment = {increment} />
-        )
-      })}
+      <button
+        onClick={() => {
+          setCount((c) => c + 1);
+        }}
+      >
+        count
+      </button>
+      <div>{getter}</div>
+      {/* <div>{getLongest(JSON.parse(data))}</div> */}
     </div>
   );
 }
