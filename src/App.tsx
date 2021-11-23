@@ -1,37 +1,27 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useCallback, useRef} from 'react';
 import './App.css';
-import useForm from './useForm'
-import Hello from './Hello';
-import useFetch from './useFetch';
+import {Hello} from './Hello';
+import {Square} from './Square';
+
 
 function App() {
-  const [values, handleChange] = useForm({email: "", password: ""})
-  const [showHello, setShowHello] = useState(true)
-  const [count, setCount] = useState<number>(() => JSON.parse(localStorage.getItem("count")!))
-
-  useEffect(() => {
-    localStorage.setItem("count", JSON.stringify(count))
-  }, [count])
-
-  const {data , loading} = useFetch(`http://numbersapi.com/${count}/trivia`) 
-
-  const inputRef = useRef<HTMLInputElement>(null)
-
+  const [count, setCount] = useState<number>(0)
+  const list = [7,21,37]
+  const increment = useCallback(
+    (n) => {
+      setCount(c => c + n)
+    },
+    [setCount],
+  )
   return (
     <div className="App">
-      <button onClick = {() => {setShowHello(!showHello)} }>Toggle</button>
-      {showHello && <Hello/>}
-      <>
-        <div>{loading? "Loading..." : data}</div>
-        <div>{count}</div>
-        <button onClick = {() => {setCount(count => count + 1)}}>+</button>
-        <button onClick = {() => {setCount(count => count - 1)}}>-</button>
-      </>
-      <div>email</div>
-      <input ref = {inputRef} type = "text" name = "email" value = {values.email} onChange = {handleChange} />
-      <div>password</div>
-      <input type = "text" name = "password" value = {values.password} onChange = {handleChange} />
-      <button onClick = {() => {inputRef.current!.focus()}}>focus</button>
+      <Hello increment = {increment} />
+      <div>count: {count}</div>
+      {list.map(n => {
+        return (
+          <Square n = {n} increment = {increment} />
+        )
+      })}
     </div>
   );
 }

@@ -1,20 +1,10 @@
-import React, {useEffect, useRef} from 'react'
+import React, {FC, useEffect, useRef} from 'react'
+import {useCountRenders} from './useCountRenders'
 
-
-function Hello() {
-    useEffect(() => {
-        console.log("hello is in");
-        return () => {
-            console.log("hello is out");
-        }
-    }, [])
-
-    const renders = useRef(0)
-    console.log("hello renders",renders.current++);
-
-    return (
-        <div>Hello</div>
-    )
+interface props {
+    increment: (n: number) => void
 }
-
-export default Hello
+export const Hello : React.FC<props> = React.memo(({increment}) => {
+    useCountRenders()
+    return <button onClick = {()=>increment(5)} >hello</button>;
+})
